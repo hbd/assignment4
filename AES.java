@@ -68,12 +68,10 @@ class AES {
 		// if not valid line, skip line
 		if (!verifyInputLine(line)) {
 		    continue; // skip line
-		} else inputMatrix = formatInputLine(line); // get formatted line
-
-
+		} else inputMatrix = formatInputMatrix(line); // get formatted line
 	    }
 	} catch (FileNotFoundException e) {
-	    System.out.println("Invalid filename.");
+	    System.out.println("Could not find input file.");
 	    e.printStackTrace();
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -97,26 +95,26 @@ class AES {
     }
 
     // check line for correct length, shrink or add padding if necessary
-    public static String[][] formatInputLine(String line) {
+    public static String[][] formatInputMatrix(String line) {
 	int i, k;
 	char[] initialChars;
-	char[] finalChars = new char[64]; // 64 characters long, bc 1 line is 32 bytes = 64 hex chars
-	String[][] charMatrix = new String[4][4];
+	char[] finalChars = new char[32]; // 64 characters long, bc 1 line is 32 bytes = 64 hex chars
+	String[][] wordMatrix = new String[4][4];
 
 	initialChars = line.toCharArray();
 
-	if (initialChars.length != 64) {
+	if (initialChars.length != 32) {
 	    // if more than 32 chars, cut down to 32 chars
-	    if (initialChars.length > 64) {
+	    if (initialChars.length > 32) {
 		i = 0;
 
-		while (i < 64) {
+		while (i < 32) {
 		    finalChars[i] = initialChars[i];
 		    i++;
 		}
 	    }
 	    // if less than 32 chars, add padding
-	    else if (initialChars.length < 64) {
+	    else if (initialChars.length < 32) {
 		int numChars = initialChars.length;
 		i = 0;
 
@@ -144,13 +142,25 @@ class AES {
 
 	// convert 1d 64 char array to 2d 32 String array, with each two chars concatenated
 	for (i = 0; i < 4; i++) {
-	    for (int j = 0; i < 4; j++) {
-		charMatrix[i][j] = Character.toString(finalChars[k++]) + Character.toString(finalChars[k++]);
+	    for (int j = 0; j < 4; j++) {
+		wordMatrix[i][j] = Character.toString(finalChars[k++]) + Character.toString(finalChars[k++]);
 	    }
 	}
 
+	System.out.println("The Plaintext is:");
+	printMatrix(wordMatrix);
+
 	// return formatted chars
-	return charMatrix;
+	return wordMatrix;
+    }
+
+    public static void printMatrix(String[][] wordMatrix) {
+	for (int i = 0; i < wordMatrix.length; i++) {
+	    for (int j = 0; j < wordMatrix[i].length; j++) {
+		System.out.printf("%s ", wordMatrix[i][j]);
+	    }
+	    System.out.printf("\n");
+	}
     }
 }
 
