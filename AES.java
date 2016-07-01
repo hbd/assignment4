@@ -34,103 +34,77 @@ class AES {
 	System.out.println("The expanded key is:");
 	ByteArray.printByteMatrix(expandedKey.expandedKey);
 
-<<<<<<< HEAD
 	final int ROUNDS = 14;
 	int i = 0;
-=======
->>>>>>> master
 	// Encrypt
-		if (isEncryption) {
-			while (i <= ROUNDS) {
-				if (i == 0) {
-					Encryption.addRoundkey(i, expandedKey.expandedKey, state.stateMatrix);
-					System.out.println("After addRoundKey(" + i + "):");
-					state.printByteMatrix(state.stateMatrix);
-					i++;
-					continue;
-				}
-
-				// subBytes
-				Encryption.subAllBytes(state, sbox); // subBytes
-				System.out.println("After subBytes:");
-				state.printByteMatrix(state.stateMatrix);
-
-				// shiftRows
-				Encryption.shiftRows(state.stateMatrix);
-				System.out.println("After shiftRows:");
-				state.printByteMatrix(state.stateMatrix);
-
-				// mixCols - skip on last round
-				if( i != 14){
-				for (int j = 0; j < state.stateMatrix[0].length; j++) {
-					Encryption.mixColumn(j, state.stateMatrix);// MixCols
-				}
-				System.out.println("After mixCols:");
-				state.printByteMatrix(state.stateMatrix);
-				}
-				// addRoundKey
-				Encryption.addRoundkey(i, expandedKey.expandedKey, state.stateMatrix);
-				System.out.println("After addRoundKey(" + i + "):");
-				state.printByteMatrix(state.stateMatrix);
-
-				i++;
-			}
-		}
-		// Decrypt
-		else{
-			int j = 14;
-			while (j > 0) {
-				//addRoundKey
-				Decryption.addRoundkey(ROUNDS, expandedKey.expandedKey, state.stateMatrix);
-				System.out.println("After addRoundKey(" + j + "):");
-				state.printByteMatrix(state.stateMatrix);
-				
-				//invShiftRows
-				Decryption.invShiftRows(state.stateMatrix);
-				System.out.println("After invShiftRows:");
-				state.printByteMatrix(state.stateMatrix);
-				
-				//invSubBytes
-				Decryption.invsubAllBytes(state,sbox);
-				System.out.println("After invSubBytes:");
-				state.printByteMatrix(state.stateMatrix);
-				
-				//invMixColumns
-				for (int k = 0; k < state.stateMatrix[0].length; k++) {
-					Decryption.invMixColumn2(k, state.stateMatrix);
-				}
-				System.out.println("After InvmixCols:");
-				state.printByteMatrix(state.stateMatrix);
-				j--;	
-			}
-			Decryption.addRoundkey(ROUNDS, expandedKey.expandedKey, state.stateMatrix);
-			System.out.println("After addRoundKey(" + j + "):");
-			state.printByteMatrix(state.stateMatrix);
-			
+	if (isEncryption) {
+	    System.out.println("===== ENCRYPTION =====");
+	    while (i <= ROUNDS) {
+		if (i == 0) {
+		    Encryption.addRoundkey(i, expandedKey.expandedKey, state.stateMatrix);
+		    System.out.println("After addRoundKey(" + i + "):");
+		    state.printByteMatrix(state.stateMatrix);
+		    i++;
+		    continue;
 		}
 
-	// Print ciphertext in hex to output file
+		// subBytes
+		Encryption.subAllBytes(state, sbox); // subBytes
+		System.out.println("After subBytes:");
+		state.printByteMatrix(state.stateMatrix);
 
-	System.out.printf("----- State -----\n");
-	System.out.println("Old state:");
-	state.printByteMatrix(state.stateMatrix);
+		// shiftRows
+		Encryption.shiftRows(state.stateMatrix);
+		System.out.println("After shiftRows:");
+		state.printByteMatrix(state.stateMatrix);
 
-	for (int i = 0; i < 14; i++) {
+		// mixCols - skip on last round
+		if( i != 14){
+		    for (int j = 0; j < state.stateMatrix[0].length; j++) {
+			Encryption.mixColumn(j, state.stateMatrix);// MixCols
+		    }
+		    System.out.println("After mixCols:");
+		    state.printByteMatrix(state.stateMatrix);
+		}
+		// addRoundKey
+		Encryption.addRoundkey(i, expandedKey.expandedKey, state.stateMatrix);
+		System.out.println("After addRoundKey(" + i + "):");
+		state.printByteMatrix(state.stateMatrix);
 
-	    // subBytes, shiftRows,
-	    subAllBytes(state, sbox);
-	    shiftRows(state.stateMatrix);
-	    for (int j = 0; j < state.stateMatrix[0].length; j++) {
-		mixColumn(j, state.stateMatrix);
+		i++;
 	    }
 	}
+	// Decrypt
+	else{
+	    System.out.println("===== DECRYPTION =====");
+	    int j = 14;
+	    while (j > 0) {
+		//addRoundKey
+		Decryption.addRoundkey(ROUNDS, expandedKey.expandedKey, state.stateMatrix);
+		System.out.println("After addRoundKey(" + j + "):");
+		state.printByteMatrix(state.stateMatrix);
 
-	System.out.println("New state:");
-	state.printByteMatrix(state.stateMatrix);
+		//invShiftRows
+		Decryption.invShiftRows(state.stateMatrix);
+		System.out.println("After invShiftRows:");
+		state.printByteMatrix(state.stateMatrix);
 
-	invShiftRows(state.stateMatrix);
-	System.out.println("New inv state:");
-	state.printByteMatrix(state.stateMatrix);
+		//invSubBytes
+		Decryption.invsubAllBytes(state,sbox);
+		System.out.println("After invSubBytes:");
+		state.printByteMatrix(state.stateMatrix);
+
+		//invMixColumns
+		for (int k = 0; k < state.stateMatrix[0].length; k++) {
+		    Decryption.invMixColumn2(k, state.stateMatrix);
+		}
+		System.out.println("After InvmixCols:");
+		state.printByteMatrix(state.stateMatrix);
+		j--;
+	    }
+
+	}
+	state.printStateAsString();
     }
 
     public static boolean isEncryption(String[] args) {
@@ -171,19 +145,6 @@ class AES {
     public static void printInputError() {
 	System.out.printf("Correct input format:\n\tjava AES [d or e] [keyFile] [inputFile]");
 	System.exit(1);
-    }
-
-    public static void subAllBytes(State state, SBox sbox) {
-	// byte[][] newState = new byte[state.stateMatrix.length][state.stateMatrix[0].length];
-
-	for (int i = 0; i < state.stateMatrix.length; i++) {
-	    for (int j = 0; j < state.stateMatrix[i].length; j++) {
-<<<<<<< HEAD
-		newState[i][j] = Encryption.subByte(state.stateMatrix[i][j], sbox.sbox);
-=======
->>>>>>> master
-	    }
-	}
     }
 
     // rotate rows left by x amount
@@ -390,6 +351,28 @@ class AES {
 
 /*
 Graveyard
+	// Print ciphertext in hex to output file
+
+	System.out.printf("----- State -----\n");
+	System.out.println("Old state:");
+	state.printByteMatrix(state.stateMatrix);
+
+	for (i = 0; i < 14; i++) {
+
+	    // subBytes, shiftRows,
+	    subAllBytes(state, sbox);
+	    shiftRows(state.stateMatrix);
+	    for (int j = 0; j < state.stateMatrix[0].length; j++) {
+		mixColumn(j, state.stateMatrix);
+	    }
+	}
+
+	System.out.println("New state:");
+	state.printByteMatrix(state.stateMatrix);
+
+	invShiftRows(state.stateMatrix);
+	System.out.println("New inv state:");
+	state.printByteMatrix(state.stateMatrix);
 
 		System.out.printf("Row %d\n", i);
 		System.out.printf("tmp[%d][%d] = %02X\n", i, 0, tmp[i][0]);

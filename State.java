@@ -106,4 +106,13 @@ public class State extends ByteArray {
 	return byteMatrix;
     }
 
+    public void printStateAsString() {
+	for (int i = 0; i < stateMatrix.length; i++) {
+	    for (int j = 0; j < stateMatrix[i].length; j++) {
+		System.out.printf("%02X", stateMatrix[i][j]);
+	    }
+	}
+	System.out.printf("\n");
+    }
+
 }
