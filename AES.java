@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 
 class AES {
 
@@ -23,7 +24,10 @@ class AES {
 	    System.exit(1);
 	}
 
-	subAllBytes(state, sbox);
+	for (int i = 0; i < 14; i++) {
+	    System.out.printf("----- State %d  -----\n", i);
+	    state = subAllBytes(state, sbox);
+	}
     }
 
     public static boolean isEncryption(String[] args) {
@@ -222,7 +226,7 @@ class AES {
 	return lookupTable;
     }
 
-    public static byte subBytes(byte word, byte[][] sbox) {
+    public static byte subByte(byte word, byte[][] sbox) {
 	int x, y;
 
 	x = (word & 0xF0) >>> 4;
@@ -231,14 +235,22 @@ class AES {
 	return sbox[x][y];
     }
 
-    public static void subAllBytes(byte[][] state, byte[][] sbox) {
+    public static byte[][] subAllBytes(byte[][] state, byte[][] sbox) {
+	byte[][] newState = new byte[state.length][state[0].length];
+
 	for (int i = 0; i < state.length; i++) {
 	    for (int j = 0; j < state[i].length; j++) {
-		state[i][j] = subBytes(state[i][j], sbox);
+		newState[i][j] = subByte(state[i][j], sbox);
 	    }
 	}
 
+	System.out.println("Old state:");
 	printByteMatrix(state);
+
+	System.out.println("New state:");
+	printByteMatrix(newState);
+
+	return newState;
     }
 }
 
@@ -319,5 +331,7 @@ Graveyard
 		// if ((wordMatrix[i][j] & x0F) == 0) {
 		//     System.out.printf("00 ");
 		// } else System.out.printf("%X ", wordMatrix[i][j]);
+
+	// byte[][] newState = Arrays.copyOf(state, state.length);
 
  */
