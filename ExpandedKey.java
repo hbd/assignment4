@@ -3,7 +3,7 @@ public class ExpandedKey {
 
     public ExpandedKey(byte[][] inputKey) {
 	//Method to expand key K
-     	byte[][] expandedKeyMatrix = new byte[4][60]; 
+     	byte[][] expandedKeyMatrix = new byte[4][60];
      	byte[] temp = new byte[4];
      	byte[] temp2 = new byte[4];
      	byte[] rconCol = new byte[4];

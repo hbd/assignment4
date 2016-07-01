@@ -27,8 +27,5 @@ public class SBox extends ByteArray {
 	k = 0;
 
 	sbox = charToByte(sboxCharTable, lookupTable.length, lookupTable[0].length);
-
-	System.out.println("The lookup table/sbox is:");
-	printByteMatrix(lookupTable);
     }
 }
