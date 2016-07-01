@@ -100,6 +100,8 @@ class AES {
 	char[] initialChars;
 	char[] finalChars = new char[32]; // 64 characters long, bc 1 line is 32 bytes = 64 hex chars
 	String[][] wordMatrix = new String[4][4];
+	byte[][] byteMatrix = new byte[4][4];
+	byte bite;
 
 	initialChars = line.toCharArray();
 
@@ -149,6 +151,19 @@ class AES {
 
 	System.out.println("The Plaintext is:");
 	printMatrix(wordMatrix);
+	System.out.printf("\n");
+
+	k = 0;
+
+	for (i = 0; i < 4; i++) {
+	    for (int j = 0; j < 4; j++) {
+		bite = 0;
+		bite = (byte) (bite ^ (Character.digit(finalChars[k++], 16) << 4));
+		bite = (byte) (bite ^ Character.digit(finalChars[k++], 16));
+		System.out.printf("%X ", bite);
+	    }
+	    System.out.printf("\n");
+	}
 
 	// return formatted chars
 	return wordMatrix;
