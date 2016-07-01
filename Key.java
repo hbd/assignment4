@@ -9,6 +9,9 @@ import java.util.Arrays;
 public class Key extends ByteArray {
     byte[][] keyMatrix;
 
+    public Key() {
+    }
+
     // inputToBytes return the input file as a 2d byte array
     public Key(String keyFilename) {
 	// read probabilities of each character, starting with 'A'
