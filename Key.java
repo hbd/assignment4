@@ -37,13 +37,14 @@ public class Key extends ByteArray {
     public static byte[][] formatKeyMatrix(String key) {
 	int i, j, k;
         char[] finalKeyChars = new char[64]; // 64 characters long, bc 1 line is 32 bytes = 64 hex chars = 256 bits
-	byte[][] byteMatrix = new byte[8][8]; // 8byte x 8byte matrix for 256-bit key
+	byte[][] byteMatrix = new byte[4][8]; // 8byte x 8byte matrix for 256-bit key
 	byte bite;
 
 	char[] initialKeyChars = key.toCharArray();
 
 	if (initialKeyChars.length != 64) {
 	    System.out.println("Key is not long enough.");
+	    System.out.printf("Number of chars in key: %d\n", i);
 	    System.exit(0);
 	} else { // input was already in proper format, copy into final
 	    i = 0;
@@ -57,8 +58,8 @@ public class Key extends ByteArray {
 	k = 0;
 
 	// fill byteMatrix with formatted character bits
-	for (i = 0; i < 8; i++) {
-	    for (j = 0; j < 4; j++) {
+	for (i = 0; i < 4; i++) {
+	    for (j = 0; j < 8; j++) {
 		// System.out.printf("character: %d = %c |\n", k, finalKeyChars[k]);
 		// System.out.printf("position: [%d,%d] | ", i, j);
 		bite = 0; // clear byte
