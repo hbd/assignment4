@@ -143,9 +143,12 @@ class AES {
 
 	for (i = 0; i < 4; i++) {
 	    for (int j = 0; j < 4; j++) {
-		bite = 0;
+		bite = 0; // clear byte
+		// add the first hex value to left-most 4 bits
 		bite = (byte) (bite ^ (Character.digit(finalChars[k++], 16) << 4));
+		// add second hex value to right-most 4 bits
 		bite = (byte) (bite ^ Character.digit(finalChars[k++], 16));
+		// assign newly calculated value in byte matrix
 		byteMatrix[i][j] = bite;
 	    }
 	}
