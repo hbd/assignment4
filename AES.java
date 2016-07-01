@@ -91,36 +91,47 @@ class AES {
 	    int j = 14;
 	    while (j > 0) {
 		//addRoundKey
-		Decryption.addRoundkey(ROUNDS, expandedKey.expandedKey, state.stateMatrix);
+		Decryption.addRoundkey(j, expandedKey.expandedKey, state.stateMatrix);
 		System.out.println("After addRoundKey(" + j + "):");
-		state.printByteMatrix(state.stateMatrix);
+		//state.printByteMatrix(state.stateMatrix);
 		state.printStateAsString();
 		System.out.printf("\n");
 
+		//invMixColumns
+		if(j != 14){
+		for (int k = 0; k < state.stateMatrix[0].length; k++) {
+		    Decryption.invMixColumn2(k, state.stateMatrix);
+		}
+		System.out.println("After invMixCols:");
+		//state.printByteMatrix(state.stateMatrix);
+		state.printStateAsString();
+		System.out.printf("\n");
+	    }
+		
 		//invShiftRows
 		Decryption.invShiftRows(state.stateMatrix);
 		System.out.println("After invShiftRows:");
-		state.printByteMatrix(state.stateMatrix);
+		//state.printByteMatrix(state.stateMatrix);
 		state.printStateAsString();
 		System.out.printf("\n");
 
 		//invSubBytes
 		Decryption.invSubAllBytes(state,sbox);
 		System.out.println("After invSubBytes:");
-		state.printByteMatrix(state.stateMatrix);
+		//state.printByteMatrix(state.stateMatrix);
 		state.printStateAsString();
 		System.out.printf("\n");
 
-		//invMixColumns
-		for (int k = 0; k < state.stateMatrix[0].length; k++) {
-		    Decryption.invMixColumn2(k, state.stateMatrix);
-		}
-		System.out.println("After invMixCols:");
-		state.printByteMatrix(state.stateMatrix);
-		state.printStateAsString();
-		System.out.printf("\n");
 		j--;
 	    }
+	    
+		//addRoundKey one last time when j = 0
+		Decryption.addRoundkey(j, expandedKey.expandedKey, state.stateMatrix);
+		System.out.println("After addRoundKey(" + j + "):");
+		//state.printByteMatrix(state.stateMatrix);
+		state.printStateAsString();
+		System.out.printf("\n");
+
 
 	}
 
