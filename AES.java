@@ -54,11 +54,15 @@ class AES {
 		Encryption.subAllBytes(state, sbox); // subBytes
 		System.out.println("After subBytes:");
 		state.printByteMatrix(state.stateMatrix);
+		state.printStateAsString();
+		System.out.printf("\n");
 
 		// shiftRows
 		Encryption.shiftRows(state.stateMatrix);
 		System.out.println("After shiftRows:");
 		state.printByteMatrix(state.stateMatrix);
+		state.printStateAsString();
+		System.out.printf("\n");
 
 		// mixCols - skip on last round
 		if( i != 14){
@@ -67,11 +71,15 @@ class AES {
 		    }
 		    System.out.println("After mixCols:");
 		    state.printByteMatrix(state.stateMatrix);
+		    state.printStateAsString();
+		    System.out.printf("\n");
 		}
 		// addRoundKey
 		Encryption.addRoundkey(i, expandedKey.expandedKey, state.stateMatrix);
 		System.out.println("After addRoundKey(" + i + "):");
 		state.printByteMatrix(state.stateMatrix);
+		state.printStateAsString();
+		System.out.printf("\n");
 
 		i++;
 	    }
@@ -86,16 +94,22 @@ class AES {
 		Decryption.addRoundkey(ROUNDS, expandedKey.expandedKey, state.stateMatrix);
 		System.out.println("After addRoundKey(" + j + "):");
 		state.printByteMatrix(state.stateMatrix);
+		state.printStateAsString();
+		System.out.printf("\n");
 
 		//invShiftRows
 		Decryption.invShiftRows(state.stateMatrix);
 		System.out.println("After invShiftRows:");
 		state.printByteMatrix(state.stateMatrix);
+		state.printStateAsString();
+		System.out.printf("\n");
 
 		//invSubBytes
 		Decryption.invSubAllBytes(state,sbox);
 		System.out.println("After invSubBytes:");
 		state.printByteMatrix(state.stateMatrix);
+		state.printStateAsString();
+		System.out.printf("\n");
 
 		//invMixColumns
 		for (int k = 0; k < state.stateMatrix[0].length; k++) {
@@ -103,31 +117,14 @@ class AES {
 		}
 		System.out.println("After invMixCols:");
 		state.printByteMatrix(state.stateMatrix);
+		state.printStateAsString();
+		System.out.printf("\n");
 		j--;
 	    }
 
 	}
 
 	state.printCipherText(isEncryption, inputFilename);
-    }
-
-    public static void printCipherText(State state, boolean isEncryption, String filename) {
-	PrintWriter pw = null;
-	try {
-	    if (isEncryption) {
-		pw = new PrintWriter(filename + ".enc", "ASCII");
-		pw.printf("%s", state.printStateAsString());
-		pw.close();
-	    } else {
-		pw = new PrintWriter(filename + ".dec", "ASCII");
-		pw.printf("%s", state.printStateAsString());
-		pw.close();
-	    }
-	} catch (FileNotFoundException e) {
-	    System.out.println(e);
-	} catch (UnsupportedEncodingException e) {
-	    System.out.println(e);
-	}
     }
 
     public static boolean isEncryption(String[] args) {

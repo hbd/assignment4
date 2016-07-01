@@ -97,7 +97,7 @@ public class State extends ByteArray {
 		// add second hex value to right-most 4 bits
 		bite = (byte) (bite ^ Character.digit(finalChars[k++], 16));
 		// assign newly calculated value in byte matrix
-		byteMatrix[i][j] = bite;
+		byteMatrix[j][i] = bite;
 	    }
 	}
 
@@ -107,18 +107,13 @@ public class State extends ByteArray {
 	return byteMatrix;
     }
 
-    public String printStateAsString() {
-	StringBuffer stateString = new StringBuffer();
-
+    public void printStateAsString() {
 	for (int i = 0; i < stateMatrix.length; i++) {
 	    for (int j = 0; j < stateMatrix[i].length; j++) {
-		stateString.append(stateMatrix[i][j]);
-		System.out.printf("%02X", stateMatrix[i][j]);
+		System.out.printf("%02X", stateMatrix[j][i]);
 	    }
 	}
 	System.out.printf("\n");
-
-	return stateString.toString();
     }
 
     public void printCipherText(boolean isEncryption, String filename) {
@@ -128,8 +123,8 @@ public class State extends ByteArray {
 		pw = new PrintWriter(filename + ".enc", "ASCII");
 		for (int i = 0; i < stateMatrix.length; i++) {
 		    for (int j = 0; j < stateMatrix[i].length; j++) {
-			pw.printf("%02X", stateMatrix[i][j]);
-			System.out.printf("%02X", stateMatrix[i][j]);
+			pw.printf("%02X", stateMatrix[j][i]);
+			// System.out.printf("%02X", stateMatrix[i][j]);
 		    }
 		}
 		pw.close();
@@ -137,8 +132,8 @@ public class State extends ByteArray {
 		pw = new PrintWriter(filename + ".dec", "ASCII");
 		for (int i = 0; i < stateMatrix.length; i++) {
 		    for (int j = 0; j < stateMatrix[i].length; j++) {
-			pw.printf("%02X", stateMatrix[i][j]);
-			System.out.printf("%02X", stateMatrix[i][j]);
+			pw.printf("%02X", stateMatrix[j][i]);
+			// System.out.printf("%02X", stateMatrix[i][j]);
 		    }
 		}
 		pw.close();
