@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.io.PrintWriter;
 
 class AES {
     public static void main(String[] args) {
@@ -74,8 +75,9 @@ class AES {
 		i++;
 	    }
 	}
+
 	// Decrypt
-	else{
+	else {
 	    System.out.println("===== DECRYPTION =====");
 	    int j = 14;
 	    while (j > 0) {
@@ -104,7 +106,27 @@ class AES {
 	    }
 
 	}
-	state.printStateAsString();
+
+	state.printCipherText(isEncryption, inputFilename);
+    }
+
+    public static void printCipherText(State state, boolean isEncryption, String filename) {
+	PrintWriter pw = null;
+	try {
+	    if (isEncryption) {
+		pw = new PrintWriter(filename + ".enc", "ASCII");
+		pw.printf("%s", state.printStateAsString());
+		pw.close();
+	    } else {
+		pw = new PrintWriter(filename + ".dec", "ASCII");
+		pw.printf("%s", state.printStateAsString());
+		pw.close();
+	    }
+	} catch (FileNotFoundException e) {
+	    System.out.println(e);
+	} catch (UnsupportedEncodingException e) {
+	    System.out.println(e);
+	}
     }
 
     public static boolean isEncryption(String[] args) {

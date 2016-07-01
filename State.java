@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.io.PrintWriter;
 
 public class State extends ByteArray {
 
@@ -106,13 +107,46 @@ public class State extends ByteArray {
 	return byteMatrix;
     }
 
-    public void printStateAsString() {
+    public String printStateAsString() {
+	StringBuffer stateString = new StringBuffer();
+
 	for (int i = 0; i < stateMatrix.length; i++) {
 	    for (int j = 0; j < stateMatrix[i].length; j++) {
+		stateString.append(stateMatrix[i][j]);
 		System.out.printf("%02X", stateMatrix[i][j]);
 	    }
 	}
 	System.out.printf("\n");
+
+	return stateString.toString();
     }
 
+    public void printCipherText(boolean isEncryption, String filename) {
+	PrintWriter pw = null;
+	try {
+	    if (isEncryption) {
+		pw = new PrintWriter(filename + ".enc", "ASCII");
+		for (int i = 0; i < stateMatrix.length; i++) {
+		    for (int j = 0; j < stateMatrix[i].length; j++) {
+			pw.printf("%02X", stateMatrix[i][j]);
+			System.out.printf("%02X", stateMatrix[i][j]);
+		    }
+		}
+		pw.close();
+	    } else {
+		pw = new PrintWriter(filename + ".dec", "ASCII");
+		for (int i = 0; i < stateMatrix.length; i++) {
+		    for (int j = 0; j < stateMatrix[i].length; j++) {
+			pw.printf("%02X", stateMatrix[i][j]);
+			System.out.printf("%02X", stateMatrix[i][j]);
+		    }
+		}
+		pw.close();
+	    }
+	} catch (FileNotFoundException e) {
+	    System.out.println(e);
+	} catch (UnsupportedEncodingException e) {
+	    System.out.println(e);
+	}
+    }
 }
