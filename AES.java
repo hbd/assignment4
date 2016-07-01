@@ -31,8 +31,42 @@ class AES {
 	System.out.println("The expanded key is:");
 	ByteArray.printByteMatrix(expandedKey.expandedKey);
 
+	final int ROUNDS = 14;
+	int i = 0;
 	// Encrypt
-
+	while (i < ROUNDS){
+		if (i == 0){
+			Encryption.addRoundkey(i, expandedKey.expandedKey, state.stateMatrix);
+			System.out.println("After addRoundKey(" + i + "):");
+			state.printByteMatrix(state.stateMatrix);
+			i++;
+			continue;
+		}
+		
+		//subBytes
+		Encryption.subAllBytes(state,sbox); //subBytes
+		System.out.println("After subBytes(" + i + "):");
+		state.printByteMatrix(state.stateMatrix);
+		
+		//shiftRows
+		Encryption.shiftRows();
+		System.out.println("After shiftRows(" + i + "):");
+		state.printByteMatrix(state.stateMatrix);
+		
+		//mixCols
+		for(int j = 0; j < state.stateMatrix[0].length; j++){
+			Encryption.mixColumn(j,state.stateMatrix);//MixCols
+		}
+		System.out.println("After mixCols(" + i + "):");
+		state.printByteMatrix(state.stateMatrix);
+		
+		//addRoundKey
+		System.out.println("After addRoundKey(" + i + "):");
+		state.printByteMatrix(state.stateMatrix);
+		Encryption.addRoundkey(i, expandedKey.expandedKey, state.stateMatrix);
+		
+		i++;
+	}
 	// Decrypt
 
 	// Print ciphertext in hex to output file
@@ -84,24 +118,12 @@ class AES {
 	System.exit(1);
     }
 
-    // find a byte in subMatrix using location derived from the two elements of word
-    // the two elements are hex values; we convert them to integers which we use as indexes
-    // we return the byte found at the address in subMatrix using these two indexes
-    public static byte subByte(byte word, byte[][] subMatrix) {
-	int x, y;
-
-	x = (word & 0xF0) >>> 4;
-	y = (word & 0x0F);
-
-	return subMatrix[x][y];
-    }
-
     public static void subAllBytes(State state, SBox sbox) {
 	byte[][] newState = new byte[state.stateMatrix.length][state.stateMatrix[0].length];
 
 	for (int i = 0; i < state.stateMatrix.length; i++) {
 	    for (int j = 0; j < state.stateMatrix[i].length; j++) {
-		newState[i][j] = subByte(state.stateMatrix[i][j], sbox.sbox);
+		newState[i][j] = Encryption.subByte(state.stateMatrix[i][j], sbox.sbox);
 	    }
 	}
 
