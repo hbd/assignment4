@@ -95,7 +95,6 @@ class AES {
 		System.out.println("After addRoundKey(" + j + "):");
 		//state.printByteMatrix(state.stateMatrix);
 		state.printStateAsString();
-		System.out.printf("\n");
 
 		//invMixColumns
 		if(j != 14){
@@ -105,7 +104,6 @@ class AES {
 		System.out.println("After invMixCols:");
 		//state.printByteMatrix(state.stateMatrix);
 		state.printStateAsString();
-		System.out.printf("\n");
 	    }
 		
 		//invShiftRows
@@ -113,14 +111,12 @@ class AES {
 		System.out.println("After invShiftRows:");
 		//state.printByteMatrix(state.stateMatrix);
 		state.printStateAsString();
-		System.out.printf("\n");
 
 		//invSubBytes
 		Decryption.invSubAllBytes(state,sbox);
 		System.out.println("After invSubBytes:");
 		//state.printByteMatrix(state.stateMatrix);
 		state.printStateAsString();
-		System.out.printf("\n");
 
 		j--;
 	    }
@@ -130,9 +126,11 @@ class AES {
 		System.out.println("After addRoundKey(" + j + "):");
 		//state.printByteMatrix(state.stateMatrix);
 		state.printStateAsString();
-		System.out.printf("\n");
 
-
+		System.out.println("The decryption of the ciphertext:");
+		State.printByteMatrix(state.stateMatrix);
+		System.out.println("The decrption of the ciphertext:");
+		state.printStateAsString();
 	}
 
 	state.printCipherText(isEncryption, inputFilename);
