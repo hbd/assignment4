@@ -11,11 +11,9 @@ public class Encryption {
     }
     
     public static void subAllBytes(State state, SBox sbox) {
-    	byte[][] newState = new byte[state.stateMatrix.length][state.stateMatrix[0].length];
-
     	for (int i = 0; i < state.stateMatrix.length; i++) {
     		for (int j = 0; j < state.stateMatrix[i].length; j++) {
-    			newState[i][j] = Encryption.subByte(state.stateMatrix[i][j], sbox.sbox);
+    			state.stateMatrix[i][j] = Encryption.subByte(state.stateMatrix[i][j], sbox.sbox);
     		}
     	}
     }

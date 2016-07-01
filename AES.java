@@ -92,7 +92,7 @@ class AES {
 		state.printByteMatrix(state.stateMatrix);
 
 		//invSubBytes
-		Decryption.invsubAllBytes(state,sbox);
+		Decryption.invSubAllBytes(state,sbox);
 		System.out.println("After invSubBytes:");
 		state.printByteMatrix(state.stateMatrix);
 
