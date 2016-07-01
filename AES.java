@@ -37,6 +37,7 @@ class AES {
 
 	final int ROUNDS = 14;
 	int i = 0;
+
 	// Encrypt
 	if (isEncryption) {
 	    System.out.println("===== ENCRYPTION =====");
@@ -100,7 +101,7 @@ class AES {
 		for (int k = 0; k < state.stateMatrix[0].length; k++) {
 		    Decryption.invMixColumn2(k, state.stateMatrix);
 		}
-		System.out.println("After InvmixCols:");
+		System.out.println("After invMixCols:");
 		state.printByteMatrix(state.stateMatrix);
 		j--;
 	    }
