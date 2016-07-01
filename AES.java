@@ -17,12 +17,19 @@ class AES {
 	keyFilename = getKeyFilename(args);
 	inputFilename = getInputFilename(args);
 
+	// get state for a single line of input
 	state = inputToBytes(inputFilename);
 	sbox = createSBox();
 	if (sbox == null) {
 	    System.out.printf("error creating sbox\n");
 	    System.exit(1);
 	}
+
+	// Encrypt
+
+	// Decrypt
+
+	// Print ciphertext in hex to output file
 
 	for (int i = 0; i < 14; i++) {
 	    System.out.printf("----- State %d  -----\n", i);
@@ -72,6 +79,7 @@ class AES {
 	System.exit(1);
     }
 
+    // inputToBytes return the input file as a 2d byte array
     public static byte[][] inputToBytes(String inputFilename) {
 	byte[][] inputMatrix;
 
@@ -82,10 +90,9 @@ class AES {
 	    while ((line = br.readLine()) != null) {
 		line = line.toUpperCase();
 		// if not valid line, skip line
-		if (!verifyInputLine(line)) {
+		if (!verifyHexLine(line)) {
 		    continue; // skip line
 		} else {
-		    System.out.println("Return inputMatrix");
 		    inputMatrix = formatInputMatrix(line); // get formatted line
 		    return inputMatrix;
 		}
@@ -100,8 +107,36 @@ class AES {
 	return null;
     }
 
-    // verifyInputLine returns true if line is valid for further formatting
-    public static boolean verifyInputLine(String line) {
+    // inputToBytes return the input file as a 2d byte array
+    public static byte[][] keyFileToBytes(String keyFilename) {
+	byte[][] keyMatrix;
+
+	// read probabilities of each character, starting with 'A'
+	try (BufferedReader br = new BufferedReader(new FileReader(keyFilename))) {
+	    String line;
+
+	    while ((line = br.readLine()) != null) {
+		line = line.toUpperCase();
+		// if not valid line, skip line
+		if (!verifyHexLine(line)) {
+		    continue; // skip line
+		} else {
+		    keyMatrix = formatInputMatrix(line); // get formatted line
+		    return inputMatrix;
+		}
+	    }
+	} catch (FileNotFoundException e) {
+	    System.out.println("Could not find input file.");
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+
+	return null;
+    }
+
+    // verifyHexLine returns true if line is valid for further formatting
+    public static boolean verifyHexLine(String line) {
 	// regex specifying all character outside of  appropriate hexademical characters
 	Pattern p = Pattern.compile("[^a-fA-F0-9]");
 
@@ -114,7 +149,7 @@ class AES {
 	return true;
     }
 
-    // check line for correct length, shrink or add padding if necessary
+    // formatInputMatrix checks line for correct length, shrink or add padding if necessary
     public static byte[][] formatInputMatrix(String line) {
 	int i, k;
 	char[] initialChars;
@@ -161,6 +196,7 @@ class AES {
 
 	k = 0;
 
+	// fill byteMatrix with formatted character bits
 	for (i = 0; i < 4; i++) {
 	    for (int j = 0; j < 4; j++) {
 		bite = 0; // clear byte
@@ -266,15 +302,13 @@ class AES {
     }
 
     //Method to expand key K
-    public static byte[][] expandKey(){ // byte[][] input
+    public static byte[][] expandKey(byte[][] inputKey) {
 	byte[][] expandedKeyMatrix = new byte[4][60]; //w is the expanded key matrix
 	byte[] temp = new byte[4];
 	byte[] temp2 = new byte[4];
 	byte[] rconCol = new byte[4];
 
 	//Declaration of RCON table
-
-	//*Need to use Zak's method to merge into 2d array right here*//
 	char rcon[] = {
 	    0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a,
 	    0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39,
@@ -300,11 +334,11 @@ class AES {
 	printByteMatrix(expandedKeyMatrix);
 
 	//Define first 4 columns of expandedKey as K
-	// for (int i = 0; i < k.length; i++){
-	//     for (int j = 0; j < k[i].length; j++){
-	// 	expandedKeyMatrix[i][j] = k[i][j];
-	//     }
-	// }
+	for (int i = 0; i < k.length; i++){
+	    for (int j = 0; j < k[i].length; j++){
+		expandedKeyMatrix[i][j] = inputKey[i][j];
+	    }
+	}
 
 	// for (int j = 4; j < 60; j++){
 
