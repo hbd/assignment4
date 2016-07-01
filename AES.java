@@ -21,6 +21,14 @@ class AES {
 	SBox sbox = new SBox();
 	Key key = new Key(keyFilename);
 
+	System.out.println("The Plaintext is:");
+	state.printByteMatrix(state.stateMatrix);
+
+	System.out.println("The Cipherkey is:");
+	key.printByteMatrix(key.keyMatrix);
+
+	System.out.println("The Sbox is:");
+	sbox.printByteMatrix(sbox.sbox);
 	// Encrypt
 
 	// Decrypt

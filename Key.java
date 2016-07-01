@@ -59,15 +59,15 @@ public class Key extends ByteArray {
 	// fill byteMatrix with formatted character bits
 	for (i = 0; i < 8; i++) {
 	    for (j = 0; j < 4; j++) {
-		System.out.printf("character: %d = %c |\n", k, finalKeyChars[k]);
-		System.out.printf("position: [%d,%d] | ", i, j);
+		// System.out.printf("character: %d = %c |\n", k, finalKeyChars[k]);
+		// System.out.printf("position: [%d,%d] | ", i, j);
 		bite = 0; // clear byte
 
 		// add the first hex value to left-most 4 bits
 		bite = (byte) (bite ^ (Character.digit(finalKeyChars[k++], 16) << 4));
 
-		System.out.printf("character: %d = %c |\n", k, finalKeyChars[k]);
-		System.out.printf("position: [%d,%d] | ", i, j);
+		// System.out.printf("character: %d = %c |\n", k, finalKeyChars[k]);
+		// System.out.printf("position: [%d,%d] | ", i, j);
 
 		// add second hex value to right-most 4 bits
 		bite = (byte) (bite ^ Character.digit(finalKeyChars[k++], 16));
@@ -76,9 +76,6 @@ public class Key extends ByteArray {
 		byteMatrix[i][j] = bite;
 	    }
 	}
-
-	System.out.println("The Key is:");
-	printByteMatrix(byteMatrix);
 
 	return byteMatrix;
     }
