@@ -91,10 +91,15 @@ public class State extends ByteArray {
 	for (i = 0; i < 4; i++) {
 	    for (int j = 0; j < 4; j++) {
 		bite = 0; // clear byte
+		System.out.printf("character: %d = %c \n", k, finalChars[k]);
+
 		// add the first hex value to left-most 4 bits
 		bite = (byte) (bite ^ (Character.digit(finalChars[k++], 16) << 4));
+		System.out.printf("character: %d = %c \n", k, finalChars[k]);
+
 		// add second hex value to right-most 4 bits
 		bite = (byte) (bite ^ Character.digit(finalChars[k++], 16));
+
 		// assign newly calculated value in byte matrix
 		byteMatrix[i][j] = bite;
 	    }

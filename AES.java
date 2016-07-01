@@ -19,6 +19,7 @@ class AES {
 	// get state for a single line of input
 	State state = new State(inputFilename);
 	SBox sbox = new SBox();
+	Key key = new Key(keyFilename);
 
 	// Encrypt
 
@@ -26,10 +27,10 @@ class AES {
 
 	// Print ciphertext in hex to output file
 
-	for (int i = 0; i < 15; i++) {
-	    System.out.printf("----- State %d  -----\n", i);
-	    subAllBytes(state, sbox);
-	}
+	// for (int i = 0; i < 15; i++) {
+	//     System.out.printf("----- State %d  -----\n", i);
+	//     subAllBytes(state, sbox);
+	// }
 
 	// expandKey();
     }
