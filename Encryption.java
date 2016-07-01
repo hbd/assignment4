@@ -121,6 +121,62 @@ public class Encryption {
     	}
     	
     }
+    
+    // rotate rows left by x amount
+    public static void shiftRows(byte[][] state) {
+	int i, j, k;
+	byte[][] tmp = new byte[state.length][state[0].length];
+
+	// first row skipped
+	// second row rotate 1
+	// third row rotate 2
+	// fourth row rotate 3
+	for (i = 0; i < tmp.length; i++) {
+	    for (j = 0; j < tmp[i].length; j++) {
+		tmp[i][j] = state[i][j];
+	    }
+	}
+
+	i = 0;
+	while (i < 4) {
+	    j = 0;
+	    switch (i) {
+	    case 1:
+		while (j < 4) {
+		    if (j == 3) {
+			state[i][j] = tmp[i][i-1];
+		    } else {
+			state[i][j] = tmp[i][j+i];
+		    }
+		    j++;
+		}
+		break;
+	    case 2:
+		while (j < 4) {
+		    if (j == 2 || j == 3) {
+			state[i][j] = tmp[i][j-i];
+		    } else {
+			state[i][j] = tmp[i][j+i];
+		    }
+		    j++;
+		}
+		break;
+	    case 3:
+		while (j < 4) {
+		    if (j == 0) {
+			state[i][j] = tmp[i][i];
+		    } else {
+			state[i][j] = tmp[i][j-1];
+		    }
+		    j++;
+		}
+		break;
+	    default:
+		break;
+	    }
+	    i++;
+	}
+    }
     	    
    
     

@@ -34,40 +34,74 @@ class AES {
 	final int ROUNDS = 14;
 	int i = 0;
 	// Encrypt
-	while (i < ROUNDS){
-		if (i == 0){
-			Encryption.addRoundkey(i, expandedKey.expandedKey, state.stateMatrix);
-			System.out.println("After addRoundKey(" + i + "):");
+		if (isEncryption) {
+			while (i <= ROUNDS) {
+				if (i == 0) {
+					Encryption.addRoundkey(i, expandedKey.expandedKey, state.stateMatrix);
+					System.out.println("After addRoundKey(" + i + "):");
+					state.printByteMatrix(state.stateMatrix);
+					i++;
+					continue;
+				}
+
+				// subBytes
+				Encryption.subAllBytes(state, sbox); // subBytes
+				System.out.println("After subBytes:");
+				state.printByteMatrix(state.stateMatrix);
+
+				// shiftRows
+				Encryption.shiftRows(state.stateMatrix);
+				System.out.println("After shiftRows:");
+				state.printByteMatrix(state.stateMatrix);
+
+				// mixCols - skip on last round
+				if( i != 14){
+				for (int j = 0; j < state.stateMatrix[0].length; j++) {
+					Encryption.mixColumn(j, state.stateMatrix);// MixCols
+				}
+				System.out.println("After mixCols:");
+				state.printByteMatrix(state.stateMatrix);
+				}
+				// addRoundKey
+				Encryption.addRoundkey(i, expandedKey.expandedKey, state.stateMatrix);
+				System.out.println("After addRoundKey(" + i + "):");
+				state.printByteMatrix(state.stateMatrix);
+
+				i++;
+			}
+		}
+		// Decrypt
+		else{
+			int j = 14;
+			while (j > 0) {
+				//addRoundKey
+				Decryption.addRoundkey(ROUNDS, expandedKey.expandedKey, state.stateMatrix);
+				System.out.println("After addRoundKey(" + j + "):");
+				state.printByteMatrix(state.stateMatrix);
+				
+				//invShiftRows
+				Decryption.invShiftRows(state.stateMatrix);
+				System.out.println("After invShiftRows:");
+				state.printByteMatrix(state.stateMatrix);
+				
+				//invSubBytes
+				Decryption.invsubAllBytes(state,sbox);
+				System.out.println("After invSubBytes:");
+				state.printByteMatrix(state.stateMatrix);
+				
+				//invMixColumns
+				for (int k = 0; k < state.stateMatrix[0].length; k++) {
+					Decryption.invMixColumn2(k, state.stateMatrix);
+				}
+				System.out.println("After InvmixCols:");
+				state.printByteMatrix(state.stateMatrix);
+				j--;	
+			}
+			Decryption.addRoundkey(ROUNDS, expandedKey.expandedKey, state.stateMatrix);
+			System.out.println("After addRoundKey(" + j + "):");
 			state.printByteMatrix(state.stateMatrix);
-			i++;
-			continue;
+			
 		}
-		
-		//subBytes
-		Encryption.subAllBytes(state,sbox); //subBytes
-		System.out.println("After subBytes(" + i + "):");
-		state.printByteMatrix(state.stateMatrix);
-		
-		//shiftRows
-		Encryption.shiftRows();
-		System.out.println("After shiftRows(" + i + "):");
-		state.printByteMatrix(state.stateMatrix);
-		
-		//mixCols
-		for(int j = 0; j < state.stateMatrix[0].length; j++){
-			Encryption.mixColumn(j,state.stateMatrix);//MixCols
-		}
-		System.out.println("After mixCols(" + i + "):");
-		state.printByteMatrix(state.stateMatrix);
-		
-		//addRoundKey
-		System.out.println("After addRoundKey(" + i + "):");
-		state.printByteMatrix(state.stateMatrix);
-		Encryption.addRoundkey(i, expandedKey.expandedKey, state.stateMatrix);
-		
-		i++;
-	}
-	// Decrypt
 
 	// Print ciphertext in hex to output file
 
