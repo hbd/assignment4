@@ -1,10 +1,17 @@
+import java.util.regex.Pattern;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+
 public class ByteArray {
 
-    public void ByteArray() {
-
+    public ByteArray() {
     }
 
-    public void printByteMatrix(byte[][] byteMatrix) {
+    public static void printByteMatrix(byte[][] byteMatrix) {
 	for (int i = 0; i < byteMatrix.length; i++) {
 	    for (int j = 0; j < byteMatrix[i].length; j++) {
 		System.out.printf("%02X ", byteMatrix[i][j]);
