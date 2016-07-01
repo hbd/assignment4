@@ -61,7 +61,7 @@ class AES {
 	try (BufferedReader br = new BufferedReader(new FileReader(inputFilename))) {
 	    StringBuffer hexChars = new StringBuffer();
 	    String line;
-	    String[][] inputMatrix;
+	    byte[][] inputMatrix;
 
 	    while ((line = br.readLine()) != null) {
 		line = line.toUpperCase();
@@ -95,11 +95,10 @@ class AES {
     }
 
     // check line for correct length, shrink or add padding if necessary
-    public static String[][] formatInputMatrix(String line) {
+    public static byte[][] formatInputMatrix(String line) {
 	int i, k;
 	char[] initialChars;
 	char[] finalChars = new char[32]; // 64 characters long, bc 1 line is 32 bytes = 64 hex chars
-	String[][] wordMatrix = new String[4][4];
 	byte[][] byteMatrix = new byte[4][4];
 	byte bite;
 
@@ -142,37 +141,36 @@ class AES {
 
 	k = 0;
 
-	// convert 1d 64 char array to 2d 32 String array, with each two chars concatenated
-	for (i = 0; i < 4; i++) {
-	    for (int j = 0; j < 4; j++) {
-		wordMatrix[i][j] = Character.toString(finalChars[k++]) + Character.toString(finalChars[k++]);
-	    }
-	}
-
-	System.out.println("The Plaintext is:");
-	printMatrix(wordMatrix);
-	System.out.printf("\n");
-
-	k = 0;
-
 	for (i = 0; i < 4; i++) {
 	    for (int j = 0; j < 4; j++) {
 		bite = 0;
 		bite = (byte) (bite ^ (Character.digit(finalChars[k++], 16) << 4));
 		bite = (byte) (bite ^ Character.digit(finalChars[k++], 16));
-		System.out.printf("%X ", bite);
+		byteMatrix[i][j] = bite;
 	    }
-	    System.out.printf("\n");
 	}
 
-	// return formatted chars
-	return wordMatrix;
+	System.out.println("The Plaintext is:");
+	printByteMatrix(byteMatrix);
+
+	return byteMatrix;
     }
 
-    public static void printMatrix(String[][] wordMatrix) {
+    public static void printStringMatrix(String[][] wordMatrix) {
 	for (int i = 0; i < wordMatrix.length; i++) {
 	    for (int j = 0; j < wordMatrix[i].length; j++) {
 		System.out.printf("%s ", wordMatrix[i][j]);
+	    }
+	    System.out.printf("\n");
+	}
+    }
+
+    public static void printByteMatrix(byte[][] wordMatrix) {
+	for (int i = 0; i < wordMatrix.length; i++) {
+	    for (int j = 0; j < wordMatrix[i].length; j++) {
+		if (wordMatrix[i][j] == 0) {
+		    System.out.printf("00 ");
+		} else System.out.printf("%X ", wordMatrix[i][j]);
 	    }
 	    System.out.printf("\n");
 	}
@@ -187,6 +185,27 @@ Graveyard
 		    hexChars.append(Integer.toHexString((int) chars[i]));
 		    System.out.printf(Integer.toHexString((int) chars[i]));
 		}
+
+
+
+	String[][] wordMatrix = new String[4][4];
+
+
+	k = 0;
+
+	// convert 1d 64 char array to 2d 32 String array, with each two chars concatenated
+	for (i = 0; i < 4; i++) {
+	    for (int j = 0; j < 4; j++) {
+		wordMatrix[i][j] = Character.toString(finalChars[k++]) + Character.toString(finalChars[k++]);
+	    }
+	}
+
+	System.out.println("The Plaintext is:");
+	printStringMatrix(wordMatrix);
+	System.out.printf("\n");
+
+	// return formatted chars
+	return wordMatrix;
 
 
  */
