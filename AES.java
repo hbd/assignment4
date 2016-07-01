@@ -19,8 +19,14 @@ class AES {
 	State state = new State(inputFilename);
 	SBox sbox = new SBox();
 
-	//Creating the 2d array for the key
-	byte[][] inputKey = Key.formatKeyMatrix(keyFilename);
+	//creating key
+	Key k = new Key(keyFilename);
+	k.printByteMatrix(k.keyMatrix);
+
+	byte[][] expandedKey = expandKey(k.keyMatrix);
+	 
+	System.out.println("The expanded key is:");
+	ByteArray.printByteMatrix(expandedKey);
 	// Encrypt
 
 	// Decrypt
@@ -32,7 +38,6 @@ class AES {
 	    subAllBytes(state, sbox);
 	}
 
-	 expandKey(inputKey);
     }
 
     public static boolean isEncryption(String[] args) {
@@ -133,10 +138,9 @@ class AES {
      	    0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d
      	};
 
-     	byte[][] rcon = ByteArray.charToByte(rconSingle, 16, 16);
+     	byte[][] rcon = ByteArray.charToByte(rconSingle, 4, 60);
 
-     	System.out.println("Rcon 2d array:");
-     	ByteArray.printByteMatrix(rcon);
+     	//ByteArray.printByteMatrix(rcon);
      	//Define first 4 columns of expandedKey as inputKey
      	for (int i = 0; i < inputKey.length; i++){
      	    for (int j = 0; j < inputKey[i].length; j++){
