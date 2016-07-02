@@ -19,6 +19,7 @@ public class State extends ByteArray {
 	// read probabilities of each character, starting with 'A'
 	try (BufferedReader br = new BufferedReader(new FileReader(inputFilename))) {
 	    String line;
+	    int i = 0;
 
 	    while ((line = br.readLine()) != null) {
 		line = line.toUpperCase();
@@ -36,11 +37,6 @@ public class State extends ByteArray {
 	    e.printStackTrace();
 	}
     }
-
-    // public State(byte[][] newState, ) {
-    // 	stateMatrix = newState;
-    // }
-
     // formatInputMatrix checks line for correct length, shrink or add padding if necessary
     public static byte[][] formatInputMatrix(String line) {
 	int i, k;
@@ -116,32 +112,20 @@ public class State extends ByteArray {
 	System.out.printf("\n");
     }
 
-    public void printCipherText(boolean isEncryption, String filename) {
-	PrintWriter pw = null;
-	try {
-	    if (isEncryption) {
-		pw = new PrintWriter(filename + ".enc", "ASCII");
-		for (int i = 0; i < stateMatrix.length; i++) {
-		    for (int j = 0; j < stateMatrix[i].length; j++) {
-			pw.printf("%02X", stateMatrix[j][i]);
-			// System.out.printf("%02X", stateMatrix[i][j]);
-		    }
+    public void printCipherText(PrintWriter pw, boolean isEncryption, String filename) {
+	if (isEncryption) {
+	    for (int i = 0; i < stateMatrix.length; i++) {
+		for (int j = 0; j < stateMatrix[i].length; j++) {
+		    pw.printf("%02X", stateMatrix[j][i]);
 		}
-		pw.close();
-	    } else {
-		pw = new PrintWriter(filename + ".dec", "ASCII");
-		for (int i = 0; i < stateMatrix.length; i++) {
-		    for (int j = 0; j < stateMatrix[i].length; j++) {
-			pw.printf("%02X", stateMatrix[j][i]);
-			// System.out.printf("%02X", stateMatrix[i][j]);
-		    }
-		}
-		pw.close();
 	    }
-	} catch (FileNotFoundException e) {
-	    System.out.println(e);
-	} catch (UnsupportedEncodingException e) {
-	    System.out.println(e);
+	} else {
+	    for (int i = 0; i < stateMatrix.length; i++) {
+		for (int j = 0; j < stateMatrix[i].length; j++) {
+		    pw.printf("%02X", stateMatrix[j][i]);
+		}
+	    }
 	}
+	pw.printf("\n");
     }
 }

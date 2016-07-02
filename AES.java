@@ -11,24 +11,73 @@ class AES {
     public static void main(String[] args) {
 	boolean isEncryption;
 	String keyFilename, inputFilename;
+	PrintWriter pw = null;
 
 	isEncryption = isEncryption(args);
 	keyFilename = getKeyFilename(args);
 	inputFilename = getInputFilename(args);
 
-	// get state for a single line of input
-	State state = new State(inputFilename);
-	SBox sbox = new SBox();
 	Key key = new Key(keyFilename);
 
-//	System.out.println("The plaintext is:");
-//	state.printByteMatrix(state.stateMatrix);
+	try {
+	    if (isEncryption) {
+		pw = new PrintWriter(inputFilename + ".enc", "ASCII");
+	    } else {
+		pw = new PrintWriter(inputFilename + ".dec", "ASCII");
+	    }
+	} catch (FileNotFoundException e) {
+	    System.out.println(e);
+	} catch (UnsupportedEncodingException e) {
+	    System.out.println(e);
+	}
+
+	// read probabilities of each character, starting with 'A'
+	try (BufferedReader br = new BufferedReader(new FileReader(inputFilename))) {
+	    String line;
+
+	    while ((line = br.readLine()) != null) {
+		line = line.toUpperCase();
+		// if not valid line, skip line
+		if (!verifyHexLine(line)) {
+		    continue; // skip line
+		} else {
+		    State state = new State();
+		    state.stateMatrix = formatInputMatrix(line); // get formatted line
+		    System.out.println("The Plaintext is:");
+		    state.printByteMatrix(state.stateMatrix);
+		    completeCryption(pw, state, key, isEncryption, inputFilename);
+		}
+	    }
+	} catch (FileNotFoundException e) {
+	    System.out.println("Could not find input file.");
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+
+	pw.close();
+    }
+
+    // verifyHexLine returns true if line is valid for further formatting
+    public static boolean verifyHexLine(String line) {
+	// regex specifying all character outside of  appropriate hexademical characters
+	Pattern p = Pattern.compile("[^a-fA-F0-9]");
+
+	// Check that all characters are alphanumeric
+	// if pattern matcher finds valid character, then input has invalid characters
+	// because it is checking for all character outside of appropriate range
+	if (p.matcher(line).find()) {
+	    return false;
+	}
+	return true;
+    }
+
+    public static void completeCryption(PrintWriter pw, State state, Key key, boolean isEncryption, String inputFilename) {
+	// get state for a single line of input
+	SBox sbox = new SBox();
 
 	System.out.println("The CipherKey is:");
 	key.printByteMatrix(key.keyMatrix);
-
-//	System.out.println("The Sbox is:");
-//	key.printByteMatrix(sbox.sbox);
 
 	ExpandedKey expandedKey = new ExpandedKey(key.keyMatrix);
 
@@ -37,6 +86,8 @@ class AES {
 
 	final int ROUNDS = 14;
 	int i = 0;
+	int j = 0;
+	int k = 0;
 
 	// Encrypt
 	if (isEncryption) {
@@ -46,7 +97,7 @@ class AES {
 		    Encryption.addRoundkey(i, expandedKey.expandedKey, state.stateMatrix);
 		    System.out.println("After addRoundKey(" + i + "):");
 		    //state.printByteMatrix(state.stateMatrix);
-			state.printStateAsString();
+		    state.printStateAsString();
 		    i++;
 		    continue;
 		}
@@ -65,7 +116,7 @@ class AES {
 
 		// mixCols - skip on last round
 		if( i != 14){
-		    for (int j = 0; j < state.stateMatrix[0].length; j++) {
+		    for (j = 0; j < state.stateMatrix[0].length; j++) {
 			Encryption.mixColumn(j, state.stateMatrix);// MixCols
 		    }
 		    System.out.println("After mixCols:");
@@ -83,11 +134,10 @@ class AES {
 	    System.out.println("The ciphertext:");
 	    state.printByteMatrix(state.stateMatrix);
 	}
-
 	// Decrypt
 	else {
 	    System.out.println("===== DECRYPTION =====");
-	    int j = 14;
+	    j = 14;
 	    while (j > 0) {
 		//addRoundKey
 		Decryption.addRoundkey(j, expandedKey.expandedKey, state.stateMatrix);
@@ -97,14 +147,14 @@ class AES {
 
 		//invMixColumns
 		if(j != 14){
-		for (int k = 0; k < state.stateMatrix[0].length; k++) {
+		for (k = 0; k < state.stateMatrix[0].length; k++) {
 		    Decryption.invMixColumn2(k, state.stateMatrix);
 		}
 		System.out.println("After invMixCols:");
 		//state.printByteMatrix(state.stateMatrix);
 		state.printStateAsString();
 	    }
-		
+
 		//invShiftRows
 		Decryption.invShiftRows(state.stateMatrix);
 		System.out.println("After invShiftRows:");
@@ -119,7 +169,6 @@ class AES {
 
 		j--;
 	    }
-	    
 		//addRoundKey one last time when j = 0
 		Decryption.addRoundkey(j, expandedKey.expandedKey, state.stateMatrix);
 		System.out.println("After addRoundKey(" + j + "):");
@@ -132,7 +181,70 @@ class AES {
 		state.printStateAsString();
 	}
 
-	state.printCipherText(isEncryption, inputFilename);
+	state.printCipherText(pw, isEncryption, inputFilename);
+    }
+
+    // formatInputMatrix checks line for correct length, shrink or add padding if necessary
+    public static byte[][] formatInputMatrix(String line) {
+	int i, k;
+	char[] initialChars;
+	char[] finalChars = new char[32]; // 64 characters long, bc 1 line is 32 bytes = 64 hex chars
+	byte[][] byteMatrix = new byte[4][4];
+	byte bite;
+
+	initialChars = line.toCharArray();
+
+	if (initialChars.length != 32) {
+	    // if more than 32 chars, cut down to 32 chars
+	    if (initialChars.length > 32) {
+		i = 0;
+
+		while (i < 32) {
+		    finalChars[i] = initialChars[i];
+		    i++;
+		}
+	    }
+	    // if less than 32 chars, add padding
+	    else if (initialChars.length < 32) {
+		int numChars = initialChars.length;
+		i = 0;
+
+		// copy first several characters
+		while (i < numChars) {
+		    finalChars[i] = initialChars[i];
+		    i++;
+		}
+
+		// fill the rest with 0s
+		while (i < finalChars.length) {
+		    finalChars[i] = 0;
+		    i++;
+		}
+	    }
+	} else { // input was already in proper format, copy into final
+	    i = 0;
+	    while (i < finalChars.length) {
+		finalChars[i] = initialChars[i];
+		i++;
+	    }
+	}
+
+	k = 0;
+
+	// fill byteMatrix with formatted character bits
+	for (i = 0; i < 4; i++) {
+	    for (int j = 0; j < 4; j++) {
+		bite = 0; // clear byte
+		// add the first hex value to left-most 4 bits
+		bite = (byte) (bite ^ (Character.digit(finalChars[k++], 16) << 4));
+		// add second hex value to right-most 4 bits
+		bite = (byte) (bite ^ Character.digit(finalChars[k++], 16));
+		// assign newly calculated value in byte matrix
+		byteMatrix[j][i] = bite;
+	    }
+	}
+
+	return byteMatrix;
     }
 
     public static boolean isEncryption(String[] args) {
