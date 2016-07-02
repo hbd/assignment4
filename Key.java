@@ -19,7 +19,7 @@ public class Key extends ByteArray {
 	    String line;
 
 	    while ((line = br.readLine()) != null) {
-		System.out.printf("Reading from %s\nReading line: %s\n", keyFilename, line);
+		//System.out.printf("Reading from %s\nReading line: %s\n", keyFilename, line);
 		line = line.toUpperCase();
 		// if not valid line, skip line
 		if (!verifyHexLine(line)) {
@@ -46,7 +46,7 @@ public class Key extends ByteArray {
 	char[] initialKeyChars = key.toCharArray();
 
 	if (initialKeyChars.length != 64) {
-		System.out.printf("Number of chars in key: %d\n", initialKeyChars.length);
+		//System.out.printf("Number of chars in key: %d\n", initialKeyChars.length);
 	    System.out.println("Key is not long enough.");
 	    System.exit(0);
 	} else { // input was already in proper format, copy into final
@@ -55,7 +55,7 @@ public class Key extends ByteArray {
 		finalKeyChars[i] = initialKeyChars[i];
 		i++;
 	    }
-	    System.out.printf("Number of chars in key: %d\n", i);
+	    //System.out.printf("Number of chars in key: %d\n", i);
 	}
 
 	k = 0;

@@ -21,14 +21,14 @@ class AES {
 	SBox sbox = new SBox();
 	Key key = new Key(keyFilename);
 
-	System.out.println("The plaintext is:");
-	state.printByteMatrix(state.stateMatrix);
+//	System.out.println("The plaintext is:");
+//	state.printByteMatrix(state.stateMatrix);
 
 	System.out.println("The CipherKey is:");
 	key.printByteMatrix(key.keyMatrix);
 
-	System.out.println("The Sbox is:");
-	key.printByteMatrix(sbox.sbox);
+//	System.out.println("The Sbox is:");
+//	key.printByteMatrix(sbox.sbox);
 
 	ExpandedKey expandedKey = new ExpandedKey(key.keyMatrix);
 
@@ -45,7 +45,8 @@ class AES {
 		if (i == 0) {
 		    Encryption.addRoundkey(i, expandedKey.expandedKey, state.stateMatrix);
 		    System.out.println("After addRoundKey(" + i + "):");
-		    state.printByteMatrix(state.stateMatrix);
+		    //state.printByteMatrix(state.stateMatrix);
+			state.printStateAsString();
 		    i++;
 		    continue;
 		}
@@ -53,16 +54,14 @@ class AES {
 		// subBytes
 		Encryption.subAllBytes(state, sbox); // subBytes
 		System.out.println("After subBytes:");
-		state.printByteMatrix(state.stateMatrix);
+		//state.printByteMatrix(state.stateMatrix);
 		state.printStateAsString();
-		System.out.printf("\n");
 
 		// shiftRows
 		Encryption.shiftRows(state.stateMatrix);
 		System.out.println("After shiftRows:");
-		state.printByteMatrix(state.stateMatrix);
+		//state.printByteMatrix(state.stateMatrix);
 		state.printStateAsString();
-		System.out.printf("\n");
 
 		// mixCols - skip on last round
 		if( i != 14){
@@ -70,19 +69,19 @@ class AES {
 			Encryption.mixColumn(j, state.stateMatrix);// MixCols
 		    }
 		    System.out.println("After mixCols:");
-		    state.printByteMatrix(state.stateMatrix);
+		    //state.printByteMatrix(state.stateMatrix);
 		    state.printStateAsString();
-		    System.out.printf("\n");
 		}
 		// addRoundKey
 		Encryption.addRoundkey(i, expandedKey.expandedKey, state.stateMatrix);
 		System.out.println("After addRoundKey(" + i + "):");
-		state.printByteMatrix(state.stateMatrix);
+		//state.printByteMatrix(state.stateMatrix);
 		state.printStateAsString();
-		System.out.printf("\n");
 
 		i++;
 	    }
+	    System.out.println("The ciphertext:");
+	    state.printByteMatrix(state.stateMatrix);
 	}
 
 	// Decrypt
